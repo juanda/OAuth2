@@ -1,0 +1,8 @@
+app:
+    resource: @AppBundle/Controller/
+    type:     annotation
+
+oauth2_server:
+    resource: "@OAuth2ServerBundle/Controller/"
+    type:     annotation
+    prefix:   /
