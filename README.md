@@ -26,3 +26,42 @@ bundle ``oauth2-server-bundle`` y sin usarlas (a pelo).
 
 > En principio la implementación del servidor de recursos se debe poder portar
 > a cualquier lenguaje sin problemas.
+
+
+app/console OAuth2:CreateScope publica "Acceso sin necesidad de autentificar al usuario"
+app/console OAuth2:CreateScope privada "Acceso con autentificación del usuario"
+app/console OAuth2:CreateClient consultaExpediciones 'http://localhost:3000/token' password,client_credentials,authorization_code publica,privada
+app/console OAuth2:CreateUser juanda juanda
+
+## Pedir un token
+
+### Con flujo "client_credentials"
+
+POST http://localhost:8000/token
+
+parámetros:
+
+grant_type=client_credentials&client_id=consultaExpediciones&client_secret=kc57pvom71w8ck48gwc8o40wwo0w8co&scope=publica
+
+### Con flujo "authorization_code"
+
+En un navegador:
+
+GET http://localhost:8000/authorize?response_type=code&client_id=consultaExpediciones&scope=privada&state=xyz&redirect_uri=http://localhost:3000/token
+
+Atención: el parámetro redirect_uri debe coincidir con el redirect_uri con que se registró el cliente.
+
+
+POST http://localhost:8000/token
+
+grant_type=authorization_code&code=c2ebaa8e17c362d4e4a0edd18dd6a08374c06238&client_id=consultaExpediciones&client_secret=kc57pvom71w8ck48gwc8o40wwo0w8co&scope=publica&redirect_uri=http://localhost:3000/token
+
+### Con flujo "password"
+
+POST http://localhost:8000/token
+
+parámetros:
+
+grant_type=password&client_id=consultaExpediciones&client_secret=kc57pvom71w8ck48gwc8o40wwo0w8co&scope=privada&username=juanda&password=juanda
+
+Si queremos que el token sea de tipo JWT,
