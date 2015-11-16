@@ -7,3 +7,21 @@ services:
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+
+  yuido.oauth2.storage.jwt:
+    class: AppBundle\JwtStorage
+    arguments:
+    - %private_key%
+    - %public_key%
+
+  yuido.oauth2.server:
+    class: OAuth2\Server
+    arguments:
+     storage:
+        - @oauth2.storage.client_credentials
+        - @oauth2.storage.access_token
+        - @oauth2.storage.authorization_code
+        - @oauth2.storage.user_credentials
+        - @oauth2.storage.refresh_token
+        - @oauth2.storage.scope
+        - @yuido.oauth2.storage.jwt

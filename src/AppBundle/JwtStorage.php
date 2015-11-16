@@ -1,10 +1,10 @@
 <?php
 
-namespace AppBundle\Storage;
+namespace AppBundle;
 
 use OAuth2\Storage\PublicKeyInterface;
 
-class JwtStorage implements  PublicKeyInterface
+class JwtStorage  implements  PublicKeyInterface
 {    
 
     private $privKey;
@@ -12,8 +12,9 @@ class JwtStorage implements  PublicKeyInterface
     
     public function __construct($privKey, $pubKey)
     {
-        $this->privKey = $privKey;
-        $this->pubKey = $pubKey;        
+
+        $this->privKey = file_get_contents($privKey);
+        $this->pubKey = file_get_contents($pubKey);
     }
 
     

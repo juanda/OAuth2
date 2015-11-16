@@ -1,6 +1,9 @@
 OAuth2 Server
 =============
 
+ATENCIÓN: Para que funcionen los token AWT es necesario aumentar la longitud de la
+cadena del atributo token en la tabla oauth_access_token a 255 al menos.
+
 Esta aplicación es la implementación de un servidor de autorización OAuth2.
 
 La aplicación es muy sencilla, modifica levemente el bundle 
@@ -41,7 +44,7 @@ POST http://localhost:8000/token
 
 parámetros:
 
-grant_type=client_credentials&client_id=consultaExpediciones&client_secret=kc57pvom71w8ck48gwc8o40wwo0w8co&scope=publica
+grant_type=client_credentials&client_id=consultaExpediciones&client_secret=7q5brdm4n2kos4wc0o8kgsoss8scs4c&scope=publica
 
 ### Con flujo "authorization_code"
 
@@ -62,6 +65,6 @@ POST http://localhost:8000/token
 
 parámetros:
 
-grant_type=password&client_id=consultaExpediciones&client_secret=kc57pvom71w8ck48gwc8o40wwo0w8co&scope=privada&username=juanda&password=juanda
+grant_type=password&client_id=consultaExpediciones&client_secret=7q5brdm4n2kos4wc0o8kgsoss8scs4c&scope=privada&username=juanda&password=juanda
 
-Si queremos que el token sea de tipo JWT,
+Si queremos que el token sea de tipo JWT, usamos la url http://localhost:8000/jwt_token

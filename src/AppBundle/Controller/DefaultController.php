@@ -15,82 +15,16 @@ use Symfony\Component\HttpFoundation\Request;
 class DefaultController extends Controller {
 
     /**
-     * @Route("/jwt_authorize", name="_jwt_authorize_validate")
-     * @Method({"GET"})
-     * @Template("OAuth2ServerBundle:Authorize:authorize.html.twig")
-     */
-    public function validateAuthorizeAction()
-    {
-        echo "HOLA";
-        $server = $this->get('oauth2.server');
-
-        if (!$server->validateAuthorizeRequest($this->get('oauth2.request'), $this->get('oauth2.response'))) {
-            return $server->getResponse();
-        }
-
-        // Get descriptions for scopes if available
-        $scopes = array();
-        $scopeStorage = $this->get('oauth2.storage.scope');
-        foreach (explode(' ', $this->get('oauth2.request')->query->get('scope')) as $scope) {
-            $scopes[] = $scopeStorage->getDescriptionForScope($scope);
-        }
-
-        return array('request' => $this->get('oauth2.request')->query->all(), 'scopes' => $scopes);
-    }
-
-    /**
-     * @Route("/jwt_authorize", name="_jwt_authorize_handle")
-     * @Method({"POST"})
-     */
-    public function handleAuthorizeAction()
-    {
-        $server = $this->get('oauth2.server');
-
-        return $server->handleAuthorizeRequest($this->get('oauth2.request'), $this->get('oauth2.response'), true);
-    }
-
-    /**
      * @Route("/jwt_token", name="jwt_token")
      */
     public function jwtTokenAction(Request $request) {
 
-        $privateKey = file_get_contents($this->container->getParameter('private_key'));
-        $publicKey = file_get_contents($this->container->getParameter('public_key'));
-
-        $server = $this->get('oauth2.server');
+        $server = $this->get('yuido.oauth2.server');
 
         $server->addGrantType($this->get('oauth2.grant_type.client_credentials'));
         $server->addGrantType($this->get('oauth2.grant_type.authorization_code'));
         $server->addGrantType($this->get('oauth2.grant_type.refresh_token'));
         $server->addGrantType($this->get('oauth2.grant_type.user_credentials'));
-
-        $clientId = $request->get('client_id');
-        $clientSecret = $request->get('client_secret');
-        $username = $request->get('username');
-        $password = $request->get('password');
-
-//        $storage = new \AppBundle\Storage\JwtStorage($privateKey, $publicKey);
-
-        $storage = new Memory(array(
-            'keys' => array(
-                'public_key'  => $publicKey,
-                'private_key' => $privateKey,
-            ),
-            // add a Client ID for testing
-            'client_credentials' => array(
-                $clientId => array('client_secret' => $clientSecret)
-            ),
-            'user_credentials' => array(
-                'username' => $username,
-                'password' => $password
-            ),
-            'supported_scopes' => array('publica', 'privada')
-
-        ));
-
-
-        $server->addStorage($storage);
-
 
         $server->setConfig('use_jwt_access_tokens', TRUE);
 
