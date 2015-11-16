@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use OAuth2\Server;
 use OAuth2\Storage\JwtAccessToken;
 use OAuth2\Storage\Memory;
 use OAuth2\Storage\Pdo;
@@ -12,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class DefaultController extends Controller {
+class TokenController extends Controller {
 
     /**
      * @Route("/jwt_token", name="jwt_token")
@@ -21,12 +22,8 @@ class DefaultController extends Controller {
 
         $server = $this->get('yuido.oauth2.server');
 
-        $server->addGrantType($this->get('oauth2.grant_type.client_credentials'));
-        $server->addGrantType($this->get('oauth2.grant_type.authorization_code'));
-        $server->addGrantType($this->get('oauth2.grant_type.refresh_token'));
-        $server->addGrantType($this->get('oauth2.grant_type.user_credentials'));
-
         $server->setConfig('use_jwt_access_tokens', TRUE);
+        $server->setConfig('allow_implicit', true);
 
         return $server->handleTokenRequest($this->get('oauth2.request'), $this->get('oauth2.response'));
     }

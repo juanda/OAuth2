@@ -33,7 +33,7 @@ bundle ``oauth2-server-bundle`` y sin usarlas (a pelo).
 
 app/console OAuth2:CreateScope publica "Acceso sin necesidad de autentificar al usuario"
 app/console OAuth2:CreateScope privada "Acceso con autentificación del usuario"
-app/console OAuth2:CreateClient consultaExpediciones 'http://localhost:3000/token' password,client_credentials,authorization_code publica,privada
+app/console OAuth2:CreateClient consultaExpediciones 'http://localhost:3000/token' password,client_credentials,authorization_code,implicit publica,privada
 app/console OAuth2:CreateUser juanda juanda
 
 ## Pedir un token
@@ -54,6 +54,8 @@ GET http://localhost:8000/authorize?response_type=code&client_id=consultaExpedic
 
 Atención: el parámetro redirect_uri debe coincidir con el redirect_uri con que se registró el cliente.
 
+Si se quiere flujo implicito cambiar response_type=code por response_type=token
+
 
 POST http://localhost:8000/token
 
@@ -68,3 +70,7 @@ parámetros:
 grant_type=password&client_id=consultaExpediciones&client_secret=7q5brdm4n2kos4wc0o8kgsoss8scs4c&scope=privada&username=juanda&password=juanda
 
 Si queremos que el token sea de tipo JWT, usamos la url http://localhost:8000/jwt_token
+
+Y para el caso del flujo "authorization_code": 
+
+http://localhost:8080/jwt_authorize?response_type=token&client_id=consultaExpediciones&scope=privada&state=xyz&redirect_uri=http://localhost:3000/access_token
