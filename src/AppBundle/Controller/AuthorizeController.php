@@ -11,35 +11,41 @@ use Symfony\Component\HttpFoundation\Request;
 class AuthorizeController extends Controller
 {
     /**
-     * @Route("/prueba", name="prueba")
+     * @Route("/yauthorize", name="_yauthorize_validate")
+     * @Method({"GET"})
+     * @Template("Authorize/authorize.html.twig")
      */
-    public function pruebaAction(){
-        echo "HOLA";exit;
+    public function validateAuthorizeAction()
+    {
+        $server = $this->getServer();
+
+        return $this->getResponse($server);
+    }
+
+    /**
+     * @Route("/yauthorize", name="_yauthorize_handle")
+     * @Method({"POST"})
+     */
+    public function handleAuthorizeAction()
+    {
+        $server = $this->getServer();
+
+        $username = $this->getUser()->getUsername();
+
+        return $server->handleAuthorizeRequest($this->get('oauth2.request'), $this->get('oauth2.response'), true, $username);
     }
 
     /**
      * @Route("/jwt_authorize", name="_jwt_authorize_validate")
      * @Method({"GET"})
-     * @Template(":Authorize:authorize.html.twig")
+     * @Template("Authorize/authorize.html.twig")
      */
     public function validateJWTAuthorizeAction()
     {
-        $server = $this->get('yuido.oauth2.server');
-        $server->setConfig('allow_implicit', true);
+        $server = $this->getServer();
         $server->setConfig('use_jwt_access_tokens', TRUE);
 
-        if (!$server->validateAuthorizeRequest($this->get('oauth2.request'), $this->get('oauth2.response'))) {
-            return $server->getResponse();
-        }
-
-        // Get descriptions for scopes if available
-        $scopes = array();
-        $scopeStorage = $this->get('oauth2.storage.scope');
-        foreach (explode(' ', $this->get('oauth2.request')->query->get('scope')) as $scope) {
-            $scopes[] = $scopeStorage->getDescriptionForScope($scope);
-        }
-
-        return array('request' => $this->get('oauth2.request')->query->all(), 'scopes' => $scopes);
+        return $this->getResponse($server);
     }
 
     /**
@@ -48,9 +54,7 @@ class AuthorizeController extends Controller
      */
     public function handleJWTAuthorizeAction(Request $request)
     {
-        $server = $this->get('yuido.oauth2.server');
-
-        $server->setConfig('allow_implicit', true);
+        $server = $this->getServer();
         $server->setConfig('use_jwt_access_tokens', TRUE);
 
         $username = $this->getUser()->getUsername();
@@ -58,16 +62,14 @@ class AuthorizeController extends Controller
         return $server->handleAuthorizeRequest($this->get('oauth2.request'), $this->get('oauth2.response'), true, $username);
     }
 
-    /**
-     * @Route("/authorize", name="_authorize_validate")
-     * @Method({"GET"})
-     * @Template("Authorize/authorize.html.twig")
-     */
-    public function validateAuthorizeAction()
-    {
-        $server = $this->get('oauth2.server');
+    protected function getServer(){
+        $server = $this->get('yuido.oauth2.server');
         $server->setConfig('allow_implicit', true);
 
+        return $server;
+    }
+
+    protected function getResponse($server){
         if (!$server->validateAuthorizeRequest($this->get('oauth2.request'), $this->get('oauth2.response'))) {
             return $server->getResponse();
         }
@@ -80,19 +82,5 @@ class AuthorizeController extends Controller
         }
 
         return array('request' => $this->get('oauth2.request')->query->all(), 'scopes' => $scopes);
-    }
-
-    /**
-     * @Route("/authorize", name="_authorize_handle")
-     * @Method({"POST"})
-     */
-    public function handleAuthorizeAction()
-    {
-        $server = $this->get('oauth2.server');
-        $server->setConfig('allow_implicit', true);
-
-        $username = $this->getUser()->getUsername();
-
-        return $server->handleAuthorizeRequest($this->get('oauth2.request'), $this->get('oauth2.response'), true, $username);
     }
 }

@@ -34,7 +34,7 @@ security:
             security: false
 
         oauth:
-            pattern: ^/(authorize|login_check|logout|prueba)
+            pattern: ^/(yauthorize|jwt_authorize|login_check|logout)
             form_login:
                 check_path: login_check
                 login_path: login_route

@@ -59,7 +59,7 @@ Nota: El chorizaco del header es el base64(consultaExpediciones:ap3117jan7cwo0gk
 
 ### Con flujo "password"
 
-POST http://localhost:8000/token
+POST http://localhost:8000/ytoken
 
 headers:
 Authorization: Basic Y29uc3VsdGFFeHBlZGljaW9uZXM6YXAzMTE3amFuN2N3bzBna2tvOG80Z2tnOG9vczQ4aw==
@@ -79,7 +79,7 @@ Nota: El chorizaco del header es el base64(consultaExpediciones:ap3117jan7cwo0gk
 
 En un navegador:
 
-GET http://localhost:8000/authorize?response_type=code&client_id=consultaExpediciones&scope=privada&state=xyz&redirect_uri=http://localhost:3000/token
+GET http://localhost:8000/yauthorize?response_type=code&client_id=consultaExpediciones&scope=privada&state=xyz&redirect_uri=http://localhost:3000/token
 
 Atención: el parámetro redirect_uri debe coincidir con el redirect_uri con que se registró el cliente.
 
