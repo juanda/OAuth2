@@ -25,3 +25,9 @@ services:
         - @oauth2.storage.refresh_token
         - @oauth2.storage.scope
         - @yuido.oauth2.storage.jwt
+
+  yuido.oauth2.user_provider:
+    class: AppBundle\User\OAuth2UserProvider
+    arguments:
+      - @doctrine.orm.entity_manager
+      - @security.encoder_factory
